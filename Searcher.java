@@ -2,14 +2,19 @@
 package webcrawler;
 
 import java.security.MessageDigest;
+import java.sql.DriverManager;
+import java.sql.Connection;
+import java.sql.SQLException;
+//import org.jsoup.Connection;
 
 public class Searcher {
     
+    public Connection c=null;
     public static String hash(String input)
     {
         try
         {
-            MessageDigest m=MessageDigest.getInstance("SHA-256");
+            MessageDigest m=MessageDigest.getInstance("hash");
             String word=input.toLowerCase();
             m.update(word.getBytes("ASCII"));
             byte [] hasher=m.digest();
@@ -31,4 +36,22 @@ public class Searcher {
     
     
     }
+    
+    //
+    public void save()   throws SQLException, ClassNotFoundException
+    {    try
+        {
+            Class.forName("com.mysql.jdbc.Driver");
+            String path = "jdbc:mysql://localhost/webcrawler";
+            c=DriverManager.getConnection(path,"root","");
+            System.out.println("Happpy Go Crawling");
+        }
+        catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
+}
+    
+    
+    
 }
