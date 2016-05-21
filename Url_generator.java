@@ -18,17 +18,23 @@ import org.jsoup.select.Elements;
  * @author gaurav
  */
 public class Url_generator {
+    private String inputword;
+    private Document d;
+  HashSet<String> tags=new HashSet<String>();
+   
+    
     public void Begin() {
-             // TODO code application logic here
+             //  application logic here
              String url=this.geturl();
+             Searcher s=new Searcher();
              Filterdomain domain=new Filterdomain(Searcher.hash(url),url);
              Domain dom=new Domain (domain.getDhash(),domain.getDurl(),domain);
-             
+             s.hash(url);
                      
             HashSet<String> tags=new HashSet<String>();
            try
            {
-              Document d = Jsoup.connect(dom.getDurl()).get();
+              d = Jsoup.connect(dom.getDurl()).get();
          
                  
                      Page_html webpage=new Page_html(d.html(),dom,new Date());
@@ -42,7 +48,7 @@ public class Url_generator {
             {   String temp=iter.attr("href");
                 temp=Handler_html.Url(temp,domain);
                 tags.add(temp);
-        //        System.out.println(temp);
+        //      System.out.println(temp);
              }
         } catch (IOException ex) {
             Logger.getLogger(Url_generator.class.getName()).log(Level.SEVERE, null, ex);
@@ -51,18 +57,57 @@ public class Url_generator {
                      Logger.getLogger(Url_generator.class.getName()).log(Level.SEVERE, null, ex);
                  }
                   
-          
-        
+      
          
-        //System.out.println("--------------------------------------------");
-         
-        for (String  itr:tags  ){
+         for (String  itr:tags  ){
              System.out.println(itr);
          }
-    
-    
+         
+         System.out.println("Number of pages visited :"+tags.size());
+      
+         System.out.println("----------------------------------------------------");
+         
+         System.out.println("Want to search for the word? Press y /n");
+           Scanner read=new Scanner(System.in);
+         String check=read.nextLine();
+         
+         if(check.equals("y"))
+         { inputword=read.nextLine();  
+         if(searchword())
+             System.out.println("Word Found Matching");
+             else
+             System.out.println("Not found");
+         } 
+         
+         
+         if (check=="n")
+             return;
+      
     
     }
+    
+    
+       public boolean searchword()
+    { 
+        // Defensive coding
+        if(this.d == null)
+        {
+            System.out.println("ERROR! Crawl first");
+            return false;
+        }
+        else
+   
+        {
+        System.out.println(" Searching word " + inputword+ "...");
+        String body = this.d.body().text();
+        return body.toUpperCase().contains(inputword.toUpperCase());
+    }
+        }
+     
+    
+    
+    
+    
     
     private String geturl()
     {
